@@ -41,12 +41,11 @@ const AddEmployee = () => {
 
     axios.post('http://localhost:3000/auth/add_employee', formData)
     .then((result)=>{
-      console.log(result);
-      // if(result.data.Status) {
-      //   navigate('/dashboard/employee');
-      // } else {
-      //   alert(result.data.Error);
-      // }
+      if(result.data.Status) {
+        navigate('/dashboard/employee');
+      } else {
+        alert(result.data.Error);
+      }
     })
     .catch(err=>console.log(err));
   };
@@ -66,7 +65,7 @@ const AddEmployee = () => {
           </div>
           <div className='my-2'>
             <label htmlFor='inputEmail4' className='form-label'>Email:</label>
-            <input type='text' id='inputEmail4' className='form-control' placeholder='Enter Email'
+            <input type='text' id='inputEmail4' className='form-control' placeholder='Enter Email' autoComplete='false'
             onChange={(e)=>setEmployee({...employee, email: e.target.value})}
             />
           </div>

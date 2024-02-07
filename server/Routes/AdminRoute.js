@@ -75,4 +75,78 @@ router.post('/add_employee', upload.single('image'), (req, res)=>{
   });
 });
 
+router.get('/employee', (req, res)=>{
+  const sql = "SELECT * FROM employees";
+  con.query(sql, (err, result)=>{
+    if(err) return res.json({Status:false, Error: "Query Error"})
+    return res.json({Status:true, Result: result});
+  });
+})
+
+router.get("/employee/:id", (req, res)=>{
+  const id = req.params.id;
+  const sql = "SELECT * FROM employees WHERE id=?";
+  con.query(sql, [id], (err, result)=>{
+    if(err) return res.json({Status:false, Error:"Query Error"});
+    return res.json({Status:true, Result:result});
+  })
+});
+
+router.put('/edit_employee/:id', (req, res)=>{
+  const id = req.params.id;
+  const sql = `UPDATE employees 
+  SET name=?, email=?, salary=?, address=?, category_id=? 
+  WHERE id=?`;
+  con.query(sql, [req.body.name, req.body.email, req.body.salary, req.body.address, req.body.category_id, id], (err, result)=>{
+    if(err) return res.json({Status:false, Error: "Query Error" + err});
+    return res.json({Status:true, Result: result});
+  });
+})
+
+router.delete('/delete_employee/:id', (req, res)=>{
+  const id = req.params.id;
+  const sql = `DELETE FROM employees WHERE id=?`;
+  con.query(sql, [id], (err, result)=>{
+    if(err) return res.json({Status:false, Error: "Query Error" + err});
+    return res.json({Status:true, Result:result});
+  })
+});
+
+router.get('/admin_count', (req, res)=>{
+  const sql = "SELECT count(id) AS adminCount FROM admin";
+  con.query(sql, (err, result)=>{
+    if(err) return res.json({Status:false, Error: "Query Error" + err});
+    return res.json({Status:true, Result:result});
+  })
+})
+
+router.get('/employee_count', (req, res)=>{
+  const sql = "SELECT count(id) AS employeeCount FROM employees";
+  con.query(sql, (err, result)=>{
+    if(err) return res.json({Status:true, Error:"Query Error" + err});
+    return res.json({Status:true, Result:result});
+  })
+})
+
+router.get('/salary_total', (req, res)=>{
+  const sql = "SELECT sum(salary) AS salaryTotal FROM employees";
+  con.query(sql, (err, result)=>{
+    if(err) return res.json({Status:true, Error:"Query Error" + err});
+    return res.json({Status:true, Result:result});
+  });
+})
+
+router.get('/admin_records', (req, res)=>{
+  const sql = "SELECT * FROM admin";
+  con.query(sql, (err, result)=>{
+    if(err) return res.json({Status:false, Error:"Query Error"+err})
+    return res.json({Status:true, Result:result});
+  })
+})
+
+router.get('/logout', (req,res)=>{
+  res.clearCookie('token');
+  return res.json({Status:true});
+})
+
 export {router as adminRouter}
